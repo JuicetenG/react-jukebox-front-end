@@ -1,0 +1,17 @@
+.track-list-container {
+  grid-area: b;
+  overflow: scroll;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.track-list-container::-webkit-scrollbar {
+  display: none;
+}
+
+li {
+  list-style-type: none;
+  border: 2px solid black;
+  margin: 2px;
+}
+
