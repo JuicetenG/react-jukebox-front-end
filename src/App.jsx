@@ -9,6 +9,7 @@ import * as trackService from './services/trackService';
 const App = () => {
   const [tracks, setTracks] = useState([]);
   const [currentTrack, setCurrentTrack] = useState(null);
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
 
@@ -20,7 +21,7 @@ const App = () => {
     fetchTracks();
   }, []);
 
-  const createTrack = async (trackFormData) => {
+  async function createTrack(trackFormData) {
     try {
       const newTrack = await trackService.create(trackFormData);
       setTracks([...tracks, newTrack]);
@@ -28,6 +29,30 @@ const App = () => {
       console.log(err);
     }
   };
+
+  async function editTrack(trackId, trackFormData) {
+    try {
+      const updatedTrack = await trackService.update(trackId, trackFormData);
+
+      if(updatedTrack.err) {
+        throw new Error(updatedTrack.err);
+      }
+
+      const updatedTrackList = tracks.map((track) => (
+        track._id !== updatedTrack._id ? track : updatedTrack
+      ));
+
+      setTracks(updatedTrackList);
+      setCurrentTrack(updatedTrack);
+      setEditing(false);
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  function setCurrent(track) {
+    editing === false ? setCurrentTrack(track) : null;
+  }
 
   async function deleteTrack(trackId) {
     try {
@@ -43,21 +68,24 @@ const App = () => {
     } catch(err) {
       console.log(err)
     }
-
   }
 
-  console.log(currentTrack);
+
   return (
     <div className="app-container">
       <h1>JukeBox</h1>
       <TrackList 
         tracks={tracks} 
-        setCurrentTrack={setCurrentTrack} 
+        setCurrent={setCurrent} 
+        editing={editing}
       />
       <TrackForm createTrack={createTrack} />
       <NowPlaying 
         currentTrack={currentTrack} 
         deleteTrack={deleteTrack}
+        editTrack={editTrack}
+        editing={editing}
+        setEditing={setEditing}
       />
     </div>
   );

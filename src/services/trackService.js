@@ -27,6 +27,21 @@ const create = async(trackFormData) => {
   }
 }
 
+const update = async(trackId, trackFormData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/${trackId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(trackFormData),
+    });
+    return response.json();
+  } catch(err) {
+    console.log(err);
+  }
+}
+
 const deleteTrack = async (trackId) => {
   try {
     const response = await fetch(BASE_URL + `/${trackId}`, {
@@ -44,5 +59,6 @@ const deleteTrack = async (trackId) => {
 export {
   index,
   create,
+  update,
   deleteTrack
 }
